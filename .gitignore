@@ -1,0 +1,11 @@
+# Apple ignores
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# build ignores
+firmware/build/*
+
+# vscode ignores
+.vscode

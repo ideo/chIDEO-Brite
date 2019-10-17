@@ -4,10 +4,14 @@
  * x button working
  * x serial working
  * x eeprom working
+ * x interrupts
+ *   x button press
+ *   x serial receive
  * 
- * - interrupts?
  * - serial parsing
- * - state saving/recalling
+ *   - save state
+ *   - load state
+ *   - set palette
  * - power management
  * - write eeprom after peiod of inactivity to save on lifetime writes
  * 
@@ -25,6 +29,7 @@
 #include <avr/io.h>
 #include <util/delay.h>
 #include <avr/eeprom.h>
+#include <avr/interrupt.h>
 
 static uint8_t false = 0;
 static uint8_t true  = 1;
@@ -39,6 +44,12 @@ static uint8_t TXPIN  = 6;
 static uint8_t RXPIN  = 7;
 
 static uint16_t colors[][3] = {{0,0,0}, {50,0,0}, {50,50,0}, {0,50,0}, {0,50,50}, {0,0,50}, {50,0,50}};
+uint8_t colorIndex;
+uint8_t numColors;
+
+uint8_t buttonPressed;
+
+/**** peripheral initialization functions ****/
 
 /**
  * Initialize and configure clock to 3.333MHz
@@ -60,7 +71,8 @@ void button_init(void) {
 	PORTA.DIRCLR = BTNPIN;
 
 	// enable pull-up and interrupt on falling edge
-	PORTA.PIN0CTRL |= PORT_PULLUPEN_bm | PORT_ISC0_bm | PORT_ISC1_bm;
+	// PORTA.PIN0CTRL |= PORT_PULLUPEN_bm | PORT_ISC0_bm | PORT_ISC1_bm;
+	PORTA.PIN0CTRL |= PORT_PULLUPEN_bm | PORT_ISC0_bm;
 }
 
 /**
@@ -116,9 +128,14 @@ void USART_init(void) {
 	uint16_t baudFreq = (uint16_t)((float)((F_CPU << 2) / baud) + 0.5);
 	USART0.BAUD = baudFreq;
 
+	// enable interrupt on receive complete
+	USART0.CTRLA |= USART_RXCIE_bm;
+
 	// enable TX and RX pins
     USART0.CTRLB |= USART_TXEN_bm | USART_RXEN_bm; 
 }
+
+/**** functions ****/
 
 void setColor(uint8_t color) {
 	TCA0.SINGLE.CMP0BUF = colors[color][0];
@@ -156,6 +173,60 @@ void colorCycle(void) {
 	}
 }
 
+/**** interrupt functions ****/
+
+/**
+ * interrupt service routine for portA pin event
+ **/
+ISR(PORTA_PORT_vect, ISR_BLOCK) {
+	if (PORTA.INTFLAGS && BTNMSK) {
+		if ((~PORTA.IN & BTNMSK) && !buttonPressed) {
+			// flag to ensure button press only counts once
+			buttonPressed = true;
+
+			// increment palette to next color
+			colorIndex++;
+			if (colorIndex >= numColors) { colorIndex = 0; }
+
+			// set color
+			setColor(colorIndex);
+
+			// debounce
+			_delay_ms(50);
+
+			// write color selection to eeprom if different than previous
+			eeprom_update_byte((uint8_t *)0, colorIndex);
+		} else if ((PORTA.IN & BTNMSK) && buttonPressed) {
+			// clear flag
+			buttonPressed = false;
+
+			// debounce
+			_delay_ms(50);
+		}
+		
+		// clear the interrupt flag
+		PORTA.INTFLAGS |= BTNMSK;
+	}
+}
+
+/**
+ * interrupt service routine for USART receive complete event
+ **/
+ISR(USART0_RXC_vect, ISR_BLOCK) {
+	// check the receive complete status bit
+	// this check might be unnecessary, but whatevs
+	if (USART0.STATUS & USART_RXCIF_bm) {
+		// get the received byte
+		uint8_t rxByte = USART0.RXDATAL;
+
+		// increment and send that byte back
+		// place holder - parsing will be here
+		sendByte(rxByte + 1);
+	}
+}
+
+/**** main function ****/
+
 int main (void){
 	clock_init();
 	TCA0_init();
@@ -163,45 +234,31 @@ int main (void){
 	button_init();
 	USART_init();
 
-	// quick delay while configurations set
+	// give USART receive complete highest interrupt priority
+	CPUINT.LVL0PRI = USART0_RXC_vect_num;
+	
+	// quick delay while configurations take effect
 	_delay_ms(10);
 	
-	uint8_t color = 0;
-	uint8_t numColors = sizeof(colors)/sizeof(colors[0]);
-	uint8_t buttonPressed = false;
+	// set global variables
+	numColors = sizeof(colors)/sizeof(colors[0]);
+	buttonPressed = false;
 
 	// recall and set last color
-	color = eeprom_read_byte(0);
-	if (color > numColors) { color = 0; }
-	setColor(color);
+	colorIndex = eeprom_read_byte(0);
+	if (colorIndex == 255) {
+		// eeprom register got reset
+		colorIndex = 0;
+	} else {
+		// wrap index is higher than palette count
+		colorIndex = colorIndex % numColors;
+	}
+	setColor(colorIndex);
+
+	// enable interrupts
+	sei();
 
 	while(1){
-		if ((~PORTA.IN & BTNMSK) && !buttonPressed) {
-			// flag to ensure button press only counts once
-			buttonPressed = true;
-
-			// increment palette to next color
-			color++;
-			if (color >= numColors) {
-				color = 0;
-			}
-
-			// set color
-			setColor(color);
-
-			// write color selection to eeprom if different than previous
-			eeprom_update_byte(0, color);
-
-			_delay_ms(50); // debounce
-		} else if ((PORTA.IN & BTNMSK) && buttonPressed) {
-			buttonPressed = false;
-
-			_delay_ms(50); // debounce
-		}
-		
-		if (USART0.STATUS & USART_RXCIF_bm) {
-			uint8_t rxByte = USART0.RXDATAL;
-			sendByte(rxByte + 1);
-		}
+		; // everything is handled by interrupts :D
 	}
 }

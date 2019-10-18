@@ -9,8 +9,8 @@
  *   x serial receive
  * 
  * - serial parsing
- *   - save state
- *   - load state
+ *   x save state
+ *   x load state
  *   - set palette
  * - power management
  * - write eeprom after peiod of inactivity to save on lifetime writes
@@ -31,18 +31,27 @@
 #include <avr/eeprom.h>
 #include <avr/interrupt.h>
 
-static uint8_t false = 0;
-static uint8_t true  = 1;
+/* constants */
+static const uint8_t false = 0;
+static const uint8_t true  = 1;
+
+static const uint8_t CMD_SAVE = 0x80;
+static const uint8_t CMD_LOAD = 0x40;
+static const uint8_t CMD_PALT = 0x20;
+
+static const uint8_t EEPROM_TEMP_SAVE  = 0x00;
+static const uint8_t EEPROM_SAVE_START = 0x10;
 
 /* pins */
-static uint8_t BTNPIN = 0;
-static uint8_t BTNMSK = 0x01; // mask for button pin
-static uint8_t BLUPIN = 1;
-static uint8_t REDPIN = 2;
-static uint8_t GRNPIN = 3;
-static uint8_t TXPIN  = 6;
-static uint8_t RXPIN  = 7;
+static const uint8_t BTNPIN = 0;
+static const uint8_t BTNMSK = 0x01; // mask for button pin
+static const uint8_t BLUPIN = 1;
+static const uint8_t REDPIN = 2;
+static const uint8_t GRNPIN = 3;
+static const uint8_t TXPIN  = 6;
+static const uint8_t RXPIN  = 7;
 
+/* global user variables */
 static uint16_t colors[][3] = {{0,0,0}, {50,0,0}, {50,50,0}, {0,50,0}, {0,50,50}, {0,0,50}, {50,0,50}};
 uint8_t colorIndex;
 uint8_t numColors;
@@ -143,13 +152,64 @@ void setColor(uint8_t color) {
 	TCA0.SINGLE.CMP2BUF = colors[color][2];
 }
 
-void sendByte(uint8_t b)
-{
-    while (!(USART0.STATUS & USART_DREIF_bm))
-    {
+void sendByte(uint8_t data) {
+	// wait for data register to be empty
+    while (!(USART0.STATUS & USART_DREIF_bm)) {
         ;
-    }        
-    USART0.TXDATAL = b;
+    }
+
+	// load data byte to send
+    USART0.TXDATAL = data;
+}
+
+void loadColor(uint8_t* eepromIndex) {
+	// get color from eeprom index
+	colorIndex = eeprom_read_byte(eepromIndex);
+
+	if (colorIndex == 255) {
+		// eeprom register got reset
+		colorIndex = 0;
+	} else {
+		// wrap index is higher than palette count
+		colorIndex = colorIndex % numColors;
+	}
+	
+	// set the LEDs
+	setColor(colorIndex);
+}
+
+uint8_t handleSerial(uint8_t data) {
+	// split data into command and index chunks
+	uint8_t command = data & 0xE0;
+	uint8_t slot = data & 0x1F;
+
+	// handle command
+	if (command == CMD_SAVE) {
+		// save color to save slot
+		uint8_t* saveIndex = (uint8_t *)(EEPROM_SAVE_START + slot);
+		eeprom_update_byte(saveIndex, colorIndex);
+	} else if (command == CMD_LOAD) {
+		// load color from save slot
+		uint8_t* eepromIndex = (uint8_t *)(EEPROM_SAVE_START + slot);
+		loadColor(eepromIndex);
+	} else if (command == CMD_PALT) {
+		// load palette
+	} else {
+		// oh no! there was an error
+		return 1;
+	}
+
+	return 0;
+}
+
+void handleError(void) {
+	// flash red and off to show error
+	while(1) {
+		setColor(5);
+		_delay_ms(500);
+		setColor(0);
+		_delay_ms(500);
+	}
 }
 
 void colorCycle(void) {
@@ -219,9 +279,13 @@ ISR(USART0_RXC_vect, ISR_BLOCK) {
 		// get the received byte
 		uint8_t rxByte = USART0.RXDATAL;
 
-		// increment and send that byte back
-		// place holder - parsing will be here
-		sendByte(rxByte + 1);
+		if(handleSerial(rxByte)) {
+			// on no! there was an error
+			handleError();
+		}
+
+		// relay byte
+		sendByte(rxByte);
 	}
 }
 
@@ -245,15 +309,7 @@ int main (void){
 	buttonPressed = false;
 
 	// recall and set last color
-	colorIndex = eeprom_read_byte(0);
-	if (colorIndex == 255) {
-		// eeprom register got reset
-		colorIndex = 0;
-	} else {
-		// wrap index is higher than palette count
-		colorIndex = colorIndex % numColors;
-	}
-	setColor(colorIndex);
+	loadColor(0);
 
 	// enable interrupts
 	sei();

@@ -12,8 +12,8 @@
  *   x save state
  *   x load state
  *   - set palette
- * - power management
- * - write eeprom after peiod of inactivity to save on lifetime writes
+ * x power management (can only idle sleep since TCA won't run in standby =[ )
+ * x write eeprom after peiod of inactivity to save on lifetime writes
  * 
  * == helpful info ==
  * - Reset pin config https://www.microchip.com/webdoc/GUID-DDB0017E-84E3-4E77-AAE9-7AC4290E5E8B/index.html?GUID-A92C1757-40E2-4062-AB6D-2536D4C33FB7
@@ -23,13 +23,14 @@
  **/
 
 #ifndef F_CPU
-#define F_CPU 3333333UL // 3.333MHz clock speed
+#define F_CPU 625000UL // 625kHz clock speed
 #endif
 
 #include <avr/io.h>
 #include <util/delay.h>
 #include <avr/eeprom.h>
 #include <avr/interrupt.h>
+#include <avr/sleep.h>
 
 /* constants */
 static const uint8_t false = 0;
@@ -42,6 +43,8 @@ static const uint8_t CMD_PALT = 0x20;
 static const uint8_t EEPROM_TEMP_SAVE  = 0x00;
 static const uint8_t EEPROM_SAVE_START = 0x10;
 
+static const uint16_t WAIT_PERIOD = 900; // seconds (15 min)
+
 /* pins */
 static const uint8_t BTNPIN = 0;
 static const uint8_t BTNMSK = 0x01; // mask for button pin
@@ -52,24 +55,29 @@ static const uint8_t TXPIN  = 6;
 static const uint8_t RXPIN  = 7;
 
 /* global user variables */
-static uint16_t colors[][3] = {{0,0,0}, {50,0,0}, {50,50,0}, {0,50,0}, {0,50,50}, {0,0,50}, {50,0,50}};
+// static uint16_t colors[][3] = {{0,0,0}, {50,0,0}, {50,50,0}, {0,50,0}, {0,50,50}, {0,0,50}, {50,0,50}};
+static uint16_t colors[][3] = {{0,0,0}, {5,0,0}, {5,5,0}, {0,5,0}, {0,5,5}, {0,0,5}, {5,0,5}}; //GBR
+// static uint16_t colors[][3] = {{0,0,1}, {0,0,2}, {0,0,3}, {0,0,4}, {0,0,5}, {0,0,6}, {0,0,7}, {0,0,8}, {0,0,9}};
 uint8_t colorIndex;
 uint8_t numColors;
 
 uint8_t buttonPressed;
 
+uint16_t secondsCount;
+
+
 /**** peripheral initialization functions ****/
 
 /**
- * Initialize and configure clock to 3.333MHz
+ * Initialize and configure clock to 625kHz
  **/
 void clock_init(void) {
-	// set the main clock to internal 20Hz oscillator
+	// set the main clock to internal 20MHz oscillator
 	_PROTECTED_WRITE(CLKCTRL.MCLKCTRLA, CLKCTRL_CLKSEL_OSC20M_gc);
 
-	// set the main clock prescaler divisor to 6
+	// set the main clock prescaler divisor to 32
 	// enable clock prescale
-	_PROTECTED_WRITE(CLKCTRL.MCLKCTRLB, CLKCTRL_PDIV_6X_gc | CLKCTRL_PEN_bm);
+	_PROTECTED_WRITE(CLKCTRL.MCLKCTRLB, CLKCTRL_PDIV_32X_gc | CLKCTRL_PEN_bm);
 }
 
 /**
@@ -106,18 +114,32 @@ void TCA0_init(void) {
 	// disable counting on Event input
 	TCA0.SINGLE.EVCTRL &= ~(TCA_SINGLE_CNTEI_bm);
 
-	// set period to 1000 Hz (using TCA prescale of 4)
+	// set period to ~305 Hz (plenty enough for eyes to not see)
 	// TCA period = clock freq / (2 * TCA prescaler * desired PWM freq)
-	TCA0.SINGLE.PERBUF = 0x01A0;
+	TCA0.SINGLE.PERBUF = 0x40; // 64 steps (6 bit color)
 	
 	// start with compare buffers set to 0 (PWM off)
 	TCA0.SINGLE.CMP0BUF = 0x000;
 	TCA0.SINGLE.CMP1BUF = 0x000;
 	TCA0.SINGLE.CMP2BUF = 0x000;
 
-	// set clock divider 4
+	// set clock divider to 16
 	// enable TCA0
-	TCA0.SINGLE.CTRLA = TCA_SINGLE_CLKSEL_DIV4_gc | TCA_SINGLE_ENABLE_bm;
+	TCA0.SINGLE.CTRLA = TCA_SINGLE_CLKSEL_DIV16_gc | TCA_SINGLE_ENABLE_bm;
+}
+
+void TCB0_init(void) {
+	// set compare value
+    TCB0.CCMP = 0x9896; // period of 1 sec
+
+	// set timer mode to periodic interrupt mode
+	TCB0.CTRLB = TCB_CNTMODE_INT_gc;
+
+	// set clock to be the same as TCA0
+	// enable TCB0
+	TCB0.CTRLA = TCB_CLKSEL_CLKTCA_gc | TCB_ENABLE_bm;
+    
+	// interrupt not enabled until needed
 }
 
 /**
@@ -137,11 +159,11 @@ void USART_init(void) {
 	uint16_t baudFreq = (uint16_t)((float)((F_CPU << 2) / baud) + 0.5);
 	USART0.BAUD = baudFreq;
 
-	// enable interrupt on receive complete
+	// enable interrupt on receive start (necessary for standy mode)
 	USART0.CTRLA |= USART_RXCIE_bm;
 
 	// enable TX and RX pins
-    USART0.CTRLB |= USART_TXEN_bm | USART_RXEN_bm; 
+    USART0.CTRLB |= USART_TXEN_bm | USART_RXEN_bm;
 }
 
 /**** functions ****/
@@ -169,8 +191,9 @@ void loadColor(uint8_t* eepromIndex) {
 	if (colorIndex == 255) {
 		// eeprom register got reset
 		colorIndex = 0;
-	} else {
-		// wrap index is higher than palette count
+	}
+	else {
+		// wrap index if higher than palette count
 		colorIndex = colorIndex % numColors;
 	}
 	
@@ -188,13 +211,16 @@ uint8_t handleSerial(uint8_t data) {
 		// save color to save slot
 		uint8_t* saveIndex = (uint8_t *)(EEPROM_SAVE_START + slot);
 		eeprom_update_byte(saveIndex, colorIndex);
-	} else if (command == CMD_LOAD) {
+	}
+	else if (command == CMD_LOAD) {
 		// load color from save slot
 		uint8_t* eepromIndex = (uint8_t *)(EEPROM_SAVE_START + slot);
 		loadColor(eepromIndex);
-	} else if (command == CMD_PALT) {
+	}
+	else if (command == CMD_PALT) {
 		// load palette
-	} else {
+	}
+	else {
 		// oh no! there was an error
 		return 1;
 	}
@@ -204,11 +230,13 @@ uint8_t handleSerial(uint8_t data) {
 
 void handleError(void) {
 	// flash red and off to show error
-	while(1) {
+	uint8_t flashCount = 5;
+	while(flashCount) {
 		setColor(5);
 		_delay_ms(500);
 		setColor(0);
 		_delay_ms(500);
+		flashCount--;
 	}
 }
 
@@ -254,9 +282,12 @@ ISR(PORTA_PORT_vect, ISR_BLOCK) {
 			// debounce
 			_delay_ms(50);
 
-			// write color selection to eeprom if different than previous
-			eeprom_update_byte((uint8_t *)0, colorIndex);
-		} else if ((PORTA.IN & BTNMSK) && buttonPressed) {
+			// start timer for eeprom update
+    		TCB0.INTCTRL &= ~TCB_CAPT_bm;
+			secondsCount = 0;
+    		TCB0.INTCTRL |= TCB_CAPT_bm;
+		}
+		else if ((PORTA.IN & BTNMSK) && buttonPressed) {
 			// clear flag
 			buttonPressed = false;
 
@@ -273,20 +304,44 @@ ISR(PORTA_PORT_vect, ISR_BLOCK) {
  * interrupt service routine for USART receive complete event
  **/
 ISR(USART0_RXC_vect, ISR_BLOCK) {
-	// check the receive complete status bit
-	// this check might be unnecessary, but whatevs
-	if (USART0.STATUS & USART_RXCIF_bm) {
-		// get the received byte
-		uint8_t rxByte = USART0.RXDATAL;
+	// check for receive to complete
+	while (!(USART0.STATUS & USART_RXCIF_bm)) {
+		;
+	}
+	
+	// get the received byte
+	uint8_t rxByte = USART0.RXDATAL;
 
-		if(handleSerial(rxByte)) {
-			// on no! there was an error
-			handleError();
-		}
-
+	if(handleSerial(rxByte) == 0) {
 		// relay byte
 		sendByte(rxByte);
 	}
+	else {
+		// on no! there was an error
+		handleError();
+		setColor(colorIndex);
+	}
+}
+
+/**
+ * interrupt service routine for TCB timer trigger
+ **/
+ISR(TCB0_INT_vect) {
+	secondsCount++;
+
+	// check if it's been long enough to save current value to temp register
+	if (secondsCount >= WAIT_PERIOD) {
+		// write color selection to eeprom temp slot if different than previous
+		eeprom_update_byte((uint8_t *)0, colorIndex);
+
+		// clear count
+		secondsCount = 0;
+		
+		// disable TCB0 interrupt until color changed again
+    	TCB0.INTCTRL &= ~TCB_CAPT_bm;
+	}
+	
+	TCB0.INTFLAGS = TCB_CAPT_bm; /* Clear the interrupt flag */
 }
 
 /**** main function ****/
@@ -294,6 +349,7 @@ ISR(USART0_RXC_vect, ISR_BLOCK) {
 int main (void){
 	clock_init();
 	TCA0_init();
+	TCB0_init();
 	LEDs_init();
 	button_init();
 	USART_init();
@@ -304,9 +360,10 @@ int main (void){
 	// quick delay while configurations take effect
 	_delay_ms(10);
 	
-	// set global variables
+	// configure global variables
 	numColors = sizeof(colors)/sizeof(colors[0]);
 	buttonPressed = false;
+	secondsCount = 0;
 
 	// recall and set last color
 	loadColor(0);
@@ -314,7 +371,12 @@ int main (void){
 	// enable interrupts
 	sei();
 
+	// configure sleep mode to idle when entered
+	SLPCTRL.CTRLA |= SLPCTRL_SMODE_IDLE_gc;
+
 	while(1){
+		sleep_enable();
+		sleep_cpu();
 		; // everything is handled by interrupts :D
 	}
 }

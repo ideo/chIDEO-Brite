@@ -10,7 +10,7 @@ Peripherals are set up and working! Deeper functionality now needs to be develop
 
 Install Arduino IDE (which installs necessary avr tools).
 
-Under `Tools > Board:... > Board Manager` search for and install `megaTinyCore`. this will install necessary header files for the attiny402.
+Under `Tools > Board:... > Board Manager` search for and install `megaTinyCore`. This will install necessary header files for the attiny402.
 
 Open terminal and change directories to wherever you cloned/downloaded this project
 
@@ -25,7 +25,7 @@ Uses https://github.com/ElTangas/jtag2updi running on an arduino to program. Cha
 
 Either alias avrdude as the location of avrdude on your machine, change `avrdude` under `flash:` in the makefile to point to the location of avrdude on your machine (likely wherever your Arduino IDE is isntalled), or install avrdude through homebrew.
 
-Change `PORT` in the makefile to the port of your Aruino running jtag2updi (will likely start with `/dev/cu.usbmodem`)
+Change `PORT` in the makefile to the port of your Arduino running jtag2updi (will likely start with `/dev/cu.usbmodem`)
 
 Open terminal and change directories to wherever you cloned/downloaded this project
 

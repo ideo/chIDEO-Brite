@@ -2615,7 +2615,7 @@ SparkFun BigTime Watch Kit&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;
 <part name="SUPPLY3" library="SparkFun-PowerSymbols" deviceset="VCC" device=""/>
 <part name="GND3" library="SparkFun-PowerSymbols" deviceset="GND" device=""/>
 <part name="R1" library="SparkFun-Resistors" deviceset="100OHM" device="-0603-1/4W-5%" value="100"/>
-<part name="R2" library="SparkFun-Resistors" deviceset="100OHM" device="-0603-1/4W-5%" value="100"/>
+<part name="R2" library="SparkFun-Resistors" deviceset="100OHM" device="-0603-1/4W-5%" value="150"/>
 <part name="R3" library="SparkFun-Resistors" deviceset="100OHM" device="-0603-1/4W-5%" value="100"/>
 <part name="D1" library="IDEO-Diodes" deviceset="19-337C/RSBHGHC-A88/4T" device=""/>
 <part name="S1" library="SparkFun-Switches" deviceset="MOMENTARY-SWITCH-SPST" device="-SMD-4.5MM-WINGED"/>
@@ -2632,7 +2632,7 @@ SparkFun BigTime Watch Kit&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;
 <part name="SUPPLY7" library="SparkFun-PowerSymbols" deviceset="VCC" device=""/>
 <part name="GND9" library="SparkFun-PowerSymbols" deviceset="GND" device=""/>
 <part name="R5" library="SparkFun-Resistors" deviceset="100OHM" device="-0603-1/4W-5%" value="100"/>
-<part name="R6" library="SparkFun-Resistors" deviceset="100OHM" device="-0603-1/4W-5%" value="100"/>
+<part name="R6" library="SparkFun-Resistors" deviceset="100OHM" device="-0603-1/4W-5%" value="150"/>
 <part name="R7" library="SparkFun-Resistors" deviceset="100OHM" device="-0603-1/4W-5%" value="100"/>
 <part name="D3" library="IDEO-Diodes" deviceset="19-337C/RSBHGHC-A88/4T" device=""/>
 <part name="S2" library="SparkFun-Switches" deviceset="MOMENTARY-SWITCH-SPST" device="-SMD-4.5MM-WINGED"/>
@@ -2651,7 +2651,7 @@ SparkFun BigTime Watch Kit&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;
 <part name="SUPPLY11" library="SparkFun-PowerSymbols" deviceset="VCC" device=""/>
 <part name="GND15" library="SparkFun-PowerSymbols" deviceset="GND" device=""/>
 <part name="R9" library="SparkFun-Resistors" deviceset="100OHM" device="-0603-1/4W-5%" value="100"/>
-<part name="R10" library="SparkFun-Resistors" deviceset="100OHM" device="-0603-1/4W-5%" value="100"/>
+<part name="R10" library="SparkFun-Resistors" deviceset="100OHM" device="-0603-1/4W-5%" value="150"/>
 <part name="R11" library="SparkFun-Resistors" deviceset="100OHM" device="-0603-1/4W-5%" value="100"/>
 <part name="D5" library="IDEO-Diodes" deviceset="19-337C/RSBHGHC-A88/4T" device=""/>
 <part name="S3" library="SparkFun-Switches" deviceset="MOMENTARY-SWITCH-SPST" device="-SMD-4.5MM-WINGED"/>
@@ -2669,7 +2669,7 @@ SparkFun BigTime Watch Kit&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;
 <part name="SUPPLY15" library="SparkFun-PowerSymbols" deviceset="VCC" device=""/>
 <part name="GND21" library="SparkFun-PowerSymbols" deviceset="GND" device=""/>
 <part name="R13" library="SparkFun-Resistors" deviceset="100OHM" device="-0603-1/4W-5%" value="100"/>
-<part name="R14" library="SparkFun-Resistors" deviceset="100OHM" device="-0603-1/4W-5%" value="100"/>
+<part name="R14" library="SparkFun-Resistors" deviceset="100OHM" device="-0603-1/4W-5%" value="150"/>
 <part name="R15" library="SparkFun-Resistors" deviceset="100OHM" device="-0603-1/4W-5%" value="100"/>
 <part name="D7" library="IDEO-Diodes" deviceset="19-337C/RSBHGHC-A88/4T" device=""/>
 <part name="S4" library="SparkFun-Switches" deviceset="MOMENTARY-SWITCH-SPST" device="-SMD-4.5MM-WINGED"/>
@@ -2687,7 +2687,7 @@ SparkFun BigTime Watch Kit&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;
 <part name="SUPPLY19" library="SparkFun-PowerSymbols" deviceset="VCC" device=""/>
 <part name="GND27" library="SparkFun-PowerSymbols" deviceset="GND" device=""/>
 <part name="R17" library="SparkFun-Resistors" deviceset="100OHM" device="-0603-1/4W-5%" value="100"/>
-<part name="R18" library="SparkFun-Resistors" deviceset="100OHM" device="-0603-1/4W-5%" value="100"/>
+<part name="R18" library="SparkFun-Resistors" deviceset="100OHM" device="-0603-1/4W-5%" value="150"/>
 <part name="R19" library="SparkFun-Resistors" deviceset="100OHM" device="-0603-1/4W-5%" value="100"/>
 <part name="D9" library="IDEO-Diodes" deviceset="19-337C/RSBHGHC-A88/4T" device=""/>
 <part name="S5" library="SparkFun-Switches" deviceset="MOMENTARY-SWITCH-SPST" device="-SMD-4.5MM-WINGED"/>
@@ -2705,7 +2705,7 @@ SparkFun BigTime Watch Kit&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;
 <part name="SUPPLY23" library="SparkFun-PowerSymbols" deviceset="VCC" device=""/>
 <part name="GND33" library="SparkFun-PowerSymbols" deviceset="GND" device=""/>
 <part name="R21" library="SparkFun-Resistors" deviceset="100OHM" device="-0603-1/4W-5%" value="100"/>
-<part name="R22" library="SparkFun-Resistors" deviceset="100OHM" device="-0603-1/4W-5%" value="100"/>
+<part name="R22" library="SparkFun-Resistors" deviceset="100OHM" device="-0603-1/4W-5%" value="150"/>
 <part name="R23" library="SparkFun-Resistors" deviceset="100OHM" device="-0603-1/4W-5%" value="100"/>
 <part name="D11" library="IDEO-Diodes" deviceset="19-337C/RSBHGHC-A88/4T" device=""/>
 <part name="S6" library="SparkFun-Switches" deviceset="MOMENTARY-SWITCH-SPST" device="-SMD-4.5MM-WINGED"/>
@@ -2723,7 +2723,7 @@ SparkFun BigTime Watch Kit&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;
 <part name="SUPPLY27" library="SparkFun-PowerSymbols" deviceset="VCC" device=""/>
 <part name="GND39" library="SparkFun-PowerSymbols" deviceset="GND" device=""/>
 <part name="R25" library="SparkFun-Resistors" deviceset="100OHM" device="-0603-1/4W-5%" value="100"/>
-<part name="R26" library="SparkFun-Resistors" deviceset="100OHM" device="-0603-1/4W-5%" value="100"/>
+<part name="R26" library="SparkFun-Resistors" deviceset="100OHM" device="-0603-1/4W-5%" value="150"/>
 <part name="R27" library="SparkFun-Resistors" deviceset="100OHM" device="-0603-1/4W-5%" value="100"/>
 <part name="D13" library="IDEO-Diodes" deviceset="19-337C/RSBHGHC-A88/4T" device=""/>
 <part name="S7" library="SparkFun-Switches" deviceset="MOMENTARY-SWITCH-SPST" device="-SMD-4.5MM-WINGED"/>
@@ -2741,7 +2741,7 @@ SparkFun BigTime Watch Kit&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;
 <part name="SUPPLY31" library="SparkFun-PowerSymbols" deviceset="VCC" device=""/>
 <part name="GND45" library="SparkFun-PowerSymbols" deviceset="GND" device=""/>
 <part name="R29" library="SparkFun-Resistors" deviceset="100OHM" device="-0603-1/4W-5%" value="100"/>
-<part name="R30" library="SparkFun-Resistors" deviceset="100OHM" device="-0603-1/4W-5%" value="100"/>
+<part name="R30" library="SparkFun-Resistors" deviceset="100OHM" device="-0603-1/4W-5%" value="150"/>
 <part name="R31" library="SparkFun-Resistors" deviceset="100OHM" device="-0603-1/4W-5%" value="100"/>
 <part name="D15" library="IDEO-Diodes" deviceset="19-337C/RSBHGHC-A88/4T" device=""/>
 <part name="S8" library="SparkFun-Switches" deviceset="MOMENTARY-SWITCH-SPST" device="-SMD-4.5MM-WINGED"/>
@@ -2759,7 +2759,7 @@ SparkFun BigTime Watch Kit&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;
 <part name="SUPPLY35" library="SparkFun-PowerSymbols" deviceset="VCC" device=""/>
 <part name="GND51" library="SparkFun-PowerSymbols" deviceset="GND" device=""/>
 <part name="R33" library="SparkFun-Resistors" deviceset="100OHM" device="-0603-1/4W-5%" value="100"/>
-<part name="R34" library="SparkFun-Resistors" deviceset="100OHM" device="-0603-1/4W-5%" value="100"/>
+<part name="R34" library="SparkFun-Resistors" deviceset="100OHM" device="-0603-1/4W-5%" value="150"/>
 <part name="R35" library="SparkFun-Resistors" deviceset="100OHM" device="-0603-1/4W-5%" value="100"/>
 <part name="D17" library="IDEO-Diodes" deviceset="19-337C/RSBHGHC-A88/4T" device=""/>
 <part name="S9" library="SparkFun-Switches" deviceset="MOMENTARY-SWITCH-SPST" device="-SMD-4.5MM-WINGED"/>
@@ -2777,7 +2777,7 @@ SparkFun BigTime Watch Kit&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;
 <part name="SUPPLY39" library="SparkFun-PowerSymbols" deviceset="VCC" device=""/>
 <part name="GND57" library="SparkFun-PowerSymbols" deviceset="GND" device=""/>
 <part name="R37" library="SparkFun-Resistors" deviceset="100OHM" device="-0603-1/4W-5%" value="100"/>
-<part name="R38" library="SparkFun-Resistors" deviceset="100OHM" device="-0603-1/4W-5%" value="100"/>
+<part name="R38" library="SparkFun-Resistors" deviceset="100OHM" device="-0603-1/4W-5%" value="150"/>
 <part name="R39" library="SparkFun-Resistors" deviceset="100OHM" device="-0603-1/4W-5%" value="100"/>
 <part name="D19" library="IDEO-Diodes" deviceset="19-337C/RSBHGHC-A88/4T" device=""/>
 <part name="S10" library="SparkFun-Switches" deviceset="MOMENTARY-SWITCH-SPST" device="-SMD-4.5MM-WINGED"/>
@@ -2851,6 +2851,13 @@ SparkFun BigTime Watch Kit&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;
 <text x="247.904" y="162.052" size="1.27" layer="97">UPDI</text>
 <text x="247.904" y="159.512" size="1.27" layer="97">VCC</text>
 <text x="247.904" y="156.972" size="1.27" layer="97">GND</text>
+<text x="12.7" y="187.96" size="1.778" layer="97">If using 2 LEDs
+red resistor = 150 ohms
+green &amp; blue resistors = 100 ohms
+
+If using 1 LED
+red resistor = 75 ohms
+green &amp; blue resistors = 56 ohms</text>
 </plain>
 <instances>
 <instance part="U1" gate="G$1" x="40.64" y="68.58" smashed="yes">
@@ -5139,4 +5146,10 @@ SparkFun BigTime Watch Kit&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;
 </sheets>
 </schematic>
 </drawing>
+<compatibility>
+<note version="6.3" minversion="6.2.2" severity="warning">
+Since Version 6.2.2 text objects can contain more than one line,
+which will not be processed correctly with this version.
+</note>
+</compatibility>
 </eagle>

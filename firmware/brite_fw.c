@@ -7,19 +7,59 @@
  * x interrupts
  *   x button press
  *   x serial receive
- * 
  * - serial parsing
  *   x save state
  *   x load state
  *   - set palette
- * x power management (can only idle sleep since TCA won't run in standby =[ )
+ *     - select which hardcoded palette to use
+ *     - save current palette selection to EEPROM
+ * - create palettes and hardcode them in
+ * x power management
+ *   x explore sleep modes (can only idle sleep since TCA won't run in standby =[ )
+ *   - explore hw power (resistors, using one LED vs 2 LEDs)
  * x write eeprom after peiod of inactivity to save on lifetime writes
+ *           
+ * == For Fun ==
+ * - pixel drawer
+ * 	 - send an initial byte (something like 0xFF that is impossible with multiple command states set) that sets nodes to pixel draw mode
+ *   - second command is count til pixel to be drawn
+ *   - each time a node receives the count command, it subtracts one from the count and transmits that new value
+ *   - if received count is zero, draw pixel (likely white)
+ * - whack-a-peg game
+ *   - send an initial byte (something like 0xFF that is impossible with multiple command states set) that sets nodes to whack-a-peg mode
+ *   - pegs use timer to randomly illuminate peg
+ * 	 - when player pushes a lit peg, it turns off and sends a command like 0x01 that lite brite controller can add up for a total score
+ *   - send a final byte that sets all nodes back to normal mode
  * 
  * == helpful info ==
  * - Reset pin config https://www.microchip.com/webdoc/GUID-DDB0017E-84E3-4E77-AAE9-7AC4290E5E8B/index.html?GUID-A92C1757-40E2-4062-AB6D-2536D4C33FB7
  * - TCA appnote http://ww1.microchip.com/downloads/en/AppNotes/TB3217-Getting-Started-with-TCA-90003217A.pdf
  * - USART http://ww1.microchip.com/downloads/en/DeviceDoc/ATtiny202-402-DataSheet-DS40001969B.pdf
  * - http://www.fourwalledcubicle.com/AVRArticles.php
+ *
+ * == location of iotn402.h ==
+ * 
+ *  ‎⁨⁨Applications/⁨Arduino.app/Contents⁩/Java/hardware/tools⁩/avr⁩/avr⁩/include⁩/⁨avr⁩/iotn402.h
+ * 
+ * == byte structure ==
+ * 
+ *  xxx xxxxx (LSB)
+ *  ||| |
+ *  ||| Address (bits 0-4)
+ *  ||Palette Command (bit 5)
+ *  |Load Command (bit 6)
+ *  Save Command (bit 7)
+ * 
+ *  examples
+ *  0x39 = use palette 25
+ *  0x4a = load pixel color from EEPROM address 10
+ *  0x92 = save pixel color to EEPROM address 18
+ * 
+ * 	Only one of the command bits (bits 5-7) should be high, to signify the command (save, load, or palette select). The address bits are then used
+ *  to identify the EEPROM address to save/load pixel color to/from, or which palette to use. Only one of the command bits high allows for error
+ *  checking incase of the command bits gets flipped. An addition to this is 'fun mode' being all command bits high, since two command bit flips is
+ *  fairly unlikely, and then using address bits to specify which fun mode to go into, and sending 0xFF ends fun mode.
+ *  
  **/
 
 #ifndef F_CPU
@@ -33,8 +73,8 @@
 #include <avr/sleep.h>
 
 /* constants */
-static const uint8_t false = 0;
-static const uint8_t true  = 1;
+static const uint8_t FALSE = 0;
+static const uint8_t TRUE  = 1;
 
 static const uint8_t CMD_SAVE = 0x80;
 static const uint8_t CMD_LOAD = 0x40;
@@ -60,9 +100,7 @@ static uint16_t colors[][3] = {{0,0,0}, {5,0,0}, {5,5,0}, {0,5,0}, {0,5,5}, {0,0
 // static uint16_t colors[][3] = {{0,0,1}, {0,0,2}, {0,0,3}, {0,0,4}, {0,0,5}, {0,0,6}, {0,0,7}, {0,0,8}, {0,0,9}};
 uint8_t colorIndex;
 uint8_t numColors;
-
 uint8_t buttonPressed;
-
 uint16_t secondsCount;
 
 
@@ -270,7 +308,7 @@ ISR(PORTA_PORT_vect, ISR_BLOCK) {
 	if (PORTA.INTFLAGS && BTNMSK) {
 		if ((~PORTA.IN & BTNMSK) && !buttonPressed) {
 			// flag to ensure button press only counts once
-			buttonPressed = true;
+			buttonPressed = TRUE;
 
 			// increment palette to next color
 			colorIndex++;
@@ -289,7 +327,7 @@ ISR(PORTA_PORT_vect, ISR_BLOCK) {
 		}
 		else if ((PORTA.IN & BTNMSK) && buttonPressed) {
 			// clear flag
-			buttonPressed = false;
+			buttonPressed = FALSE;
 
 			// debounce
 			_delay_ms(50);
@@ -325,6 +363,9 @@ ISR(USART0_RXC_vect, ISR_BLOCK) {
 
 /**
  * interrupt service routine for TCB timer trigger
+ * 
+ * TCB timer is used to store the pixel value after WAIT_PERIOD
+ * this prevents the EEPROM temp address from wearing out as fast due to less write cycles
  **/
 ISR(TCB0_INT_vect) {
 	secondsCount++;
@@ -362,7 +403,7 @@ int main (void){
 	
 	// configure global variables
 	numColors = sizeof(colors)/sizeof(colors[0]);
-	buttonPressed = false;
+	buttonPressed = FALSE;
 	secondsCount = 0;
 
 	// recall and set last color

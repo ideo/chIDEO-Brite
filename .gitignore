@@ -9,3 +9,12 @@ firmware/build/*
 
 # vscode ignores
 .vscode
+
+# eagle ignores
+*.s#?
+*.b#?
+*.l#?
+*.b$?
+*.s$?
+*.l$?
+eagle.epf

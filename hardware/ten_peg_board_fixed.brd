@@ -1926,7 +1926,7 @@ design rules under a new name.</description>
 <attribute name="NAME" x="15.08125" y="12.66825" size="0.8128" layer="25" font="vector" ratio="15" align="bottom-center"/>
 <attribute name="PROD_ID" value="RES-12438" x="41.75125" y="29.845" size="1.778" layer="27" rot="R90" display="off"/>
 </element>
-<element name="R2" library="SparkFun-Resistors" package="0603" value="100" x="17.30375" y="10.795" smashed="yes" rot="R90">
+<element name="R2" library="SparkFun-Resistors" package="0603" value="150" x="17.30375" y="10.795" smashed="yes" rot="R90">
 <attribute name="NAME" x="17.30375" y="12.66825" size="0.8128" layer="25" font="vector" ratio="15" align="bottom-center"/>
 <attribute name="PROD_ID" value="RES-12438" x="43.97375" y="33.655" size="1.778" layer="27" rot="R90" display="off"/>
 </element>
@@ -1949,7 +1949,7 @@ design rules under a new name.</description>
 <attribute name="NAME" x="469.10625" y="12.66825" size="0.8128" layer="25" font="vector" ratio="15" align="bottom-center"/>
 <attribute name="PROD_ID" value="RES-12438" x="59.21375" y="10.795" size="0.8128" layer="27" ratio="20" rot="R90" display="off"/>
 </element>
-<element name="R6" library="SparkFun-Resistors" package="0603" value="100" x="471.28625" y="10.795" smashed="yes" rot="R90">
+<element name="R6" library="SparkFun-Resistors" package="0603" value="150" x="471.28625" y="10.795" smashed="yes" rot="R90">
 <attribute name="NAME" x="471.32875" y="12.66825" size="0.8128" layer="25" font="vector" ratio="15" align="bottom-center"/>
 <attribute name="PROD_ID" value="RES-12438" x="65.24625" y="6.985" size="0.8128" layer="27" ratio="20" rot="R90" display="off"/>
 </element>
@@ -1981,7 +1981,7 @@ design rules under a new name.</description>
 <attribute name="NAME" x="116.04625" y="12.66825" size="0.8128" layer="25" font="vector" ratio="15" align="bottom-center"/>
 <attribute name="PROD_ID" value="RES-12438" x="104.61625" y="10.795" size="1.778" layer="27" rot="R90" display="off"/>
 </element>
-<element name="R10" library="SparkFun-Resistors" package="0603" value="100" x="118.26875" y="10.795" smashed="yes" rot="R90">
+<element name="R10" library="SparkFun-Resistors" package="0603" value="150" x="118.26875" y="10.795" smashed="yes" rot="R90">
 <attribute name="NAME" x="118.26875" y="12.7" size="0.8128" layer="25" font="vector" ratio="15" align="bottom-center"/>
 <attribute name="PROD_ID" value="RES-12438" x="110.64875" y="6.985" size="1.778" layer="27" rot="R90" display="off"/>
 </element>
@@ -2010,7 +2010,7 @@ design rules under a new name.</description>
 <attribute name="NAME" x="166.37" y="12.66825" size="0.8128" layer="25" font="vector" ratio="15" align="bottom-center"/>
 <attribute name="PROD_ID" value="RES-12438" x="154.94" y="10.795" size="1.778" layer="27" rot="R90" display="off"/>
 </element>
-<element name="R14" library="SparkFun-Resistors" package="0603" value="100" x="168.5925" y="10.795" smashed="yes" rot="R90">
+<element name="R14" library="SparkFun-Resistors" package="0603" value="150" x="168.5925" y="10.795" smashed="yes" rot="R90">
 <attribute name="NAME" x="168.5925" y="12.66825" size="0.8128" layer="25" font="vector" ratio="15" align="bottom-center"/>
 <attribute name="PROD_ID" value="RES-12438" x="160.9725" y="6.985" size="1.778" layer="27" rot="R90" display="off"/>
 </element>
@@ -2039,7 +2039,7 @@ design rules under a new name.</description>
 <attribute name="NAME" x="216.8525" y="12.66825" size="0.8128" layer="25" font="vector" ratio="15" align="bottom-center"/>
 <attribute name="PROD_ID" value="RES-12438" x="205.4225" y="10.795" size="1.778" layer="27" rot="R90" display="off"/>
 </element>
-<element name="R18" library="SparkFun-Resistors" package="0603" value="100" x="219.075" y="10.795" smashed="yes" rot="R90">
+<element name="R18" library="SparkFun-Resistors" package="0603" value="150" x="219.075" y="10.795" smashed="yes" rot="R90">
 <attribute name="NAME" x="219.075" y="12.66825" size="0.8128" layer="25" font="vector" ratio="15" align="bottom-center"/>
 <attribute name="PROD_ID" value="RES-12438" x="211.455" y="6.985" size="1.778" layer="27" rot="R90" display="off"/>
 </element>
@@ -2068,7 +2068,7 @@ design rules under a new name.</description>
 <attribute name="NAME" x="267.335" y="12.66825" size="0.8128" layer="25" font="vector" ratio="15" align="bottom-center"/>
 <attribute name="PROD_ID" value="RES-12438" x="255.905" y="10.795" size="1.778" layer="27" rot="R90" display="off"/>
 </element>
-<element name="R22" library="SparkFun-Resistors" package="0603" value="100" x="269.5575" y="10.795" smashed="yes" rot="R90">
+<element name="R22" library="SparkFun-Resistors" package="0603" value="150" x="269.5575" y="10.795" smashed="yes" rot="R90">
 <attribute name="NAME" x="269.5575" y="12.66825" size="0.8128" layer="25" font="vector" ratio="15" align="bottom-center"/>
 <attribute name="PROD_ID" value="RES-12438" x="261.9375" y="6.985" size="1.778" layer="27" rot="R90" display="off"/>
 </element>
@@ -2097,7 +2097,7 @@ design rules under a new name.</description>
 <attribute name="NAME" x="317.8175" y="12.66825" size="0.8128" layer="25" font="vector" ratio="15" align="bottom-center"/>
 <attribute name="PROD_ID" value="RES-12438" x="306.3875" y="10.795" size="1.778" layer="27" rot="R90" display="off"/>
 </element>
-<element name="R26" library="SparkFun-Resistors" package="0603" value="100" x="320.04" y="10.795" smashed="yes" rot="R90">
+<element name="R26" library="SparkFun-Resistors" package="0603" value="150" x="320.04" y="10.795" smashed="yes" rot="R90">
 <attribute name="NAME" x="320.04" y="12.66825" size="0.8128" layer="25" font="vector" ratio="15" align="bottom-center"/>
 <attribute name="PROD_ID" value="RES-12438" x="312.42" y="6.985" size="1.778" layer="27" rot="R90" display="off"/>
 </element>
@@ -2126,7 +2126,7 @@ design rules under a new name.</description>
 <attribute name="NAME" x="368.14125" y="12.66825" size="0.8128" layer="25" font="vector" ratio="15" align="bottom-center"/>
 <attribute name="PROD_ID" value="RES-12438" x="356.71125" y="10.795" size="1.778" layer="27" rot="R90" display="off"/>
 </element>
-<element name="R30" library="SparkFun-Resistors" package="0603" value="100" x="370.36375" y="10.795" smashed="yes" rot="R90">
+<element name="R30" library="SparkFun-Resistors" package="0603" value="150" x="370.36375" y="10.795" smashed="yes" rot="R90">
 <attribute name="NAME" x="370.36375" y="12.66825" size="0.8128" layer="25" font="vector" ratio="15" align="bottom-center"/>
 <attribute name="PROD_ID" value="RES-12438" x="362.74375" y="6.985" size="1.778" layer="27" rot="R90" display="off"/>
 </element>
@@ -2155,7 +2155,7 @@ design rules under a new name.</description>
 <attribute name="NAME" x="418.62375" y="12.66825" size="0.8128" layer="25" font="vector" ratio="15" align="bottom-center"/>
 <attribute name="PROD_ID" value="RES-12438" x="407.19375" y="10.795" size="1.778" layer="27" rot="R90" display="off"/>
 </element>
-<element name="R34" library="SparkFun-Resistors" package="0603" value="100" x="420.84625" y="10.795" smashed="yes" rot="R90">
+<element name="R34" library="SparkFun-Resistors" package="0603" value="150" x="420.84625" y="10.795" smashed="yes" rot="R90">
 <attribute name="NAME" x="420.84625" y="12.66825" size="0.8128" layer="25" font="vector" ratio="15" align="bottom-center"/>
 <attribute name="PROD_ID" value="RES-12438" x="413.22625" y="6.985" size="1.778" layer="27" rot="R90" display="off"/>
 </element>
@@ -2184,7 +2184,7 @@ design rules under a new name.</description>
 <attribute name="NAME" x="65.56375" y="12.66825" size="0.8128" layer="25" font="vector" ratio="15" align="bottom-center"/>
 <attribute name="PROD_ID" value="RES-12438" x="54.13375" y="10.795" size="1.778" layer="27" rot="R90" display="off"/>
 </element>
-<element name="R38" library="SparkFun-Resistors" package="0603" value="100" x="67.78625" y="10.795" smashed="yes" rot="R90">
+<element name="R38" library="SparkFun-Resistors" package="0603" value="150" x="67.78625" y="10.795" smashed="yes" rot="R90">
 <attribute name="NAME" x="67.78625" y="12.66825" size="0.8128" layer="25" font="vector" ratio="15" align="bottom-center"/>
 <attribute name="PROD_ID" value="RES-12438" x="60.16625" y="6.985" size="1.778" layer="27" rot="R90" display="off"/>
 </element>
